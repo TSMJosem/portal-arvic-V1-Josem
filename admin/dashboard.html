@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador - GRUPO IT ARVIC</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-layout">
+    <header class="admin-header">
+        <nav class="navbar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">
+                    <span class="grupo-text">GRUPO IT</span>
+                    <span class="arvic-text">ARVIC</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <span id="adminUserName">Administrador Principal</span>
+                <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-content">
+        <div class="container">
+            <div class="admin-title">
+                <h1>Panel de Administración</h1>
+                <p>Gestione usuarios, empresas, proyectos y asignaciones desde este panel centralizado</p>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="usersCount">0</div>
+                    <div class="stat-label">Usuarios Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="companiesCount">0</div>
+                    <div class="stat-label">Empresas Registradas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="projectsCount">0</div>
+                    <div class="stat-label">Proyectos Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="assignmentsCount">0</div>
+                    <div class="stat-label">Asignaciones Totales</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Gestión de Usuarios -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">👥 Gestión de Usuarios</h2>
+                        <button class="add-btn" onclick="openUserModal()">+ Nuevo Usuario</button>
+                    </div>
+                    <div class="items-list" id="usersList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👤</div>
+                            <div class="empty-state-title">No hay usuarios</div>
+                            <div class="empty-state-desc">Cree el primer usuario consultor</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Empresas -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">🏢 Gestión de Empresas</h2>
+                        <button class="add-btn" onclick="openCompanyModal()">+ Nueva Empresa</button>
+                    </div>
+                    <div class="items-list" id="companiesList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🏢</div>
+                            <div class="empty-state-title">No hay empresas</div>
+                            <div class="empty-state-desc">Registre la primera empresa cliente</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Proyectos -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 Gestión de Proyectos</h2>
+                        <button class="add-btn" onclick="openProjectModal()">+ Nuevo Proyecto</button>
+                    </div>
+                    <div class="items-list" id="projectsList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <div class="empty-state-title">No hay proyectos</div>
+                            <div class="empty-state-desc">Cree el primer proyecto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asignaciones Recientes -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">🎯 Asignaciones Recientes</h2>
+                    </div>
+                    <div class="items-list" id="recentAssignments">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎯</div>
+                            <div class="empty-state-title">Sin asignaciones</div>
+                            <div class="empty-state-desc">Las asignaciones recientes aparecerán aquí</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Asignaciones -->
+            <div class="assignments-section">
+                <h2 class="card-title">🔗 Gestión de Asignaciones</h2>
+                <p class="mb-4">Asigne usuarios a empresas y proyectos específicos</p>
+                
+                <div class="assignment-form">
+                    <div class="form-group">
+                        <label for="assignUser">Usuario Consultor</label>
+                        <select id="assignUser" required>
+                            <option value="">Seleccionar usuario</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignCompany">Empresa Cliente</label>
+                        <select id="assignCompany" required>
+                            <option value="">Seleccionar empresa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignProject">Proyecto</label>
+                        <select id="assignProject" required>
+                            <option value="">Seleccionar proyecto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignReportType">Tipo de Reporte</label>
+                        <select id="assignReportType" required>
+                            <option value="">Seleccionar frecuencia</option>
+                            <option value="Diario">Diario</option>
+                            <option value="Semanal">Semanal</option>
+                            <option value="Mensual">Mensual</option>
+                            <option value="Trimestral">Trimestral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" onclick="createAssignment()">Crear Asignación</button>
+                    </div>
+                </div>
+
+                <div class="assignments-list" id="assignmentsList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔗</div>
+                        <div class="empty-state-title">No hay asignaciones</div>
+                        <div class="empty-state-desc">Las asignaciones creadas aparecerán en esta lista</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Usuario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">👤 Crear Nuevo Usuario</h2>
+                <button class="close" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm" class="admin-form">
+                <div class="form-group">
+                    <label for="userName">Nombre Completo *</label>
+                    <input type="text" id="userName" placeholder="Ej: Juan Pérez García" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email (opcional)</label>
+                    <input type="email" id="userEmail" placeholder="juan.perez@empresa.com">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                </div>
+            </form>
+            <div class="message message-info">
+                <strong>Información:</strong> El sistema generará automáticamente un ID único y una contraseña temporal para el nuevo usuario.
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Empresa -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🏢 Registrar Nueva Empresa</h2>
+                <button class="close" onclick="closeModal('companyModal')">&times;</button>
+            </div>
+            <form id="companyForm" class="admin-form">
+                <div class="form-group">
+                    <label for="companyName">Nombre de la Empresa *</label>
+                    <input type="text" id="companyName" placeholder="Ej: Tecnología Avanzada SA de CV" required>
+                </div>
+                <div class="form-group">
+                    <label for="companyDescription">Descripción (opcional)</label>
+                    <textarea id="companyDescription" placeholder="Breve descripción de la empresa y sus servicios" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Registrar Empresa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Proyecto -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📋 Crear Nuevo Proyecto</h2>
+                <button class="close" onclick="closeModal('projectModal')">&times;</button>
+            </div>
+            <form id="projectForm" class="admin-form">
+                <div class="form-group">
+                    <label for="projectName">Nombre del Proyecto *</label>
+                    <input type="text" id="projectName" placeholder="Ej: Sistema de Gestión Empresarial" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Descripción (opcional)</label>
+                    <textarea id="projectDescription" placeholder="Descripción detallada del proyecto" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectStatus">Estado del Proyecto</label>
+                    <select id="projectStatus">
+                        <option value="Planificación">Planificación</option>
+                        <option value="En Progreso" selected>En Progreso</option>
+                        <option value="En Pausa">En Pausa</option>
+                        <option value="Completado">Completado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Crear Proyecto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/database.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
