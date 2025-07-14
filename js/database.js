@@ -1,6 +1,6 @@
 /**
- * === SISTEMA DE BASE DE DATOS PARA PORTAL ARVIC ===
- * Maneja todos los datos del portal usando localStorage
+ * === SISTEMA DE BASE DE DATOS PARA PORTAL ARVIC ACTUALIZADO ===
+ * Maneja todos los datos del portal usando localStorage incluyendo tareas y módulos
  */
 
 class PortalDatabase {
@@ -16,10 +16,14 @@ class PortalDatabase {
             this.setupDefaultUsers();
             this.setupDefaultCompanies();
             this.setupDefaultProjects();
+            this.setupDefaultTasks();
+            this.setupDefaultModules();
             this.setData('initialized', true);
             this.setData('user_counter', 3);
             this.setData('company_counter', 4);
             this.setData('project_counter', 4);
+            this.setData('task_counter', 4);
+            this.setData('module_counter', 4);
         }
     }
 
@@ -117,6 +121,63 @@ class PortalDatabase {
             }
         };
         this.setData('projects', defaultProjects);
+    }
+
+    setupDefaultTasks() {
+        const defaultTasks = {
+            '0001': {
+                id: '0001',
+                name: 'Configurar base de datos inicial',
+                description: 'Crear esquema de base de datos y tablas principales',
+                createdAt: new Date(Date.now() - 86400000 * 7).toISOString(), // 7 días atrás
+                isActive: true
+            },
+            '0002': {
+                id: '0002',
+                name: 'Implementar autenticación de usuarios',
+                description: 'Sistema de login y manejo de sesiones',
+                createdAt: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 días atrás
+                isActive: true
+            },
+            '0003': {
+                id: '0003',
+                name: 'Diseñar interfaz de usuario',
+                description: 'Crear mockups y prototipos de la interfaz',
+                createdAt: new Date().toISOString(),
+                isActive: true
+            }
+        };
+        this.setData('tasks', defaultTasks);
+    }
+
+    setupDefaultModules() {
+        const defaultModules = {
+            '0001': {
+                id: '0001',
+                name: 'Módulo de Autenticación',
+                description: 'Manejo de login, logout y sesiones de usuario',
+                category: 'Backend',
+                createdAt: new Date(Date.now() - 86400000 * 10).toISOString(), // 10 días atrás
+                isActive: true
+            },
+            '0002': {
+                id: '0002',
+                name: 'Panel de Administración',
+                description: 'Interfaz para gestión de usuarios y configuración',
+                category: 'Frontend',
+                createdAt: new Date(Date.now() - 86400000 * 5).toISOString(), // 5 días atrás
+                isActive: true
+            },
+            '0003': {
+                id: '0003',
+                name: 'API de Reportes',
+                description: 'Endpoints para creación y gestión de reportes',
+                category: 'API',
+                createdAt: new Date().toISOString(),
+                isActive: true
+            }
+        };
+        this.setData('modules', defaultModules);
     }
 
     // === MÉTODOS GENERALES ===
@@ -355,6 +416,115 @@ class PortalDatabase {
         return { success: true, message: 'Proyecto eliminado correctamente' };
     }
 
+    // === GESTIÓN DE TAREAS ===
+    getTasks() {
+        return this.getData('tasks') || {};
+    }
+
+    getTask(taskId) {
+        const tasks = this.getTasks();
+        return tasks[taskId] || null;
+    }
+
+    createTask(taskData) {
+        const tasks = this.getTasks();
+        const counter = this.getData('task_counter') || 1;
+        const taskId = counter.toString().padStart(4, '0');
+        
+        const newTask = {
+            id: taskId,
+            name: taskData.name,
+            description: taskData.description || '',
+            createdAt: new Date().toISOString(),
+            isActive: true
+        };
+        
+        tasks[taskId] = newTask;
+        this.setData('tasks', tasks);
+        this.setData('task_counter', counter + 1);
+        
+        return { success: true, task: newTask };
+    }
+
+    updateTask(taskId, updateData) {
+        const tasks = this.getTasks();
+        if (!tasks[taskId]) {
+            return { success: false, message: 'Tarea no encontrada' };
+        }
+        
+        tasks[taskId] = { ...tasks[taskId], ...updateData };
+        this.setData('tasks', tasks);
+        
+        return { success: true, task: tasks[taskId] };
+    }
+
+    deleteTask(taskId) {
+        const tasks = this.getTasks();
+        if (!tasks[taskId]) {
+            return { success: false, message: 'Tarea no encontrada' };
+        }
+        
+        delete tasks[taskId];
+        this.setData('tasks', tasks);
+        
+        return { success: true, message: 'Tarea eliminada correctamente' };
+    }
+
+    // === GESTIÓN DE MÓDULOS ===
+    getModules() {
+        return this.getData('modules') || {};
+    }
+
+    getModule(moduleId) {
+        const modules = this.getModules();
+        return modules[moduleId] || null;
+    }
+
+    createModule(moduleData) {
+        const modules = this.getModules();
+        const counter = this.getData('module_counter') || 1;
+        const moduleId = counter.toString().padStart(4, '0');
+        
+        const newModule = {
+            id: moduleId,
+            name: moduleData.name,
+            description: moduleData.description || '',
+            category: moduleData.category || 'Otros',
+            createdAt: new Date().toISOString(),
+            isActive: true
+        };
+        
+        modules[moduleId] = newModule;
+        this.setData('modules', modules);
+        this.setData('module_counter', counter + 1);
+        
+        return { success: true, module: newModule };
+    }
+
+    updateModule(moduleId, updateData) {
+        const modules = this.getModules();
+        if (!modules[moduleId]) {
+            return { success: false, message: 'Módulo no encontrado' };
+        }
+        
+        modules[moduleId] = { ...modules[moduleId], ...updateData };
+        this.setData('modules', modules);
+        
+        return { success: true, module: modules[moduleId] };
+    }
+
+    deleteModule(moduleId) {
+        const modules = this.getModules();
+        if (!modules[moduleId]) {
+            return { success: false, message: 'Módulo no encontrado' };
+        }
+        
+        delete modules[moduleId];
+        this.setData('modules', modules);
+        
+        return { success: true, message: 'Módulo eliminado correctamente' };
+    }
+
     // === GESTIÓN DE ASIGNACIONES ===
     getAssignments() {
         return this.getData('assignments') || {};
@@ -474,7 +644,12 @@ class PortalDatabase {
             userId: reportData.userId,
             title: reportData.title,
             content: reportData.content,
+            reportDate: reportData.reportDate,
+            progress: reportData.progress,
+            priority: reportData.priority,
             reportType: reportData.reportType,
+            companyId: reportData.companyId,
+            projectId: reportData.projectId,
             status: 'Pendiente',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -521,6 +696,18 @@ class PortalDatabase {
         const projects = this.getProjects();
         const assignments = this.getAssignments();
         const reports = this.getReports();
+        const tasks = this.getTasks();
+        const modules = this.getModules();
+    }
+    // === ESTADÍSTICAS ===
+    getStats() {
+        const users = this.getUsers();
+        const companies = this.getCompanies();
+        const projects = this.getProjects();
+        const assignments = this.getAssignments();
+        const reports = this.getReports();
+        const tasks = this.getTasks();
+        const modules = this.getModules();
         
         return {
             totalUsers: Object.keys(users).length - 1, // -1 para excluir admin
@@ -528,9 +715,77 @@ class PortalDatabase {
             totalProjects: Object.keys(projects).length,
             totalAssignments: Object.keys(assignments).length,
             totalReports: Object.keys(reports).length,
+            totalTasks: Object.keys(tasks).length,
+            totalModules: Object.keys(modules).length,
             activeUsers: Object.values(users).filter(u => u.isActive && u.role === 'consultor').length,
-            pendingReports: Object.values(reports).filter(r => r.status === 'Pendiente').length
+            pendingReports: Object.values(reports).filter(r => r.status === 'Pendiente').length,
+            completedTasks: Object.values(tasks).filter(t => t.status === 'Completada').length,
+            pendingTasks: Object.values(tasks).filter(t => t.status === 'Pendiente').length,
+            inProgressTasks: Object.values(tasks).filter(t => t.status === 'En Progreso').length,
+            completedModules: Object.values(modules).filter(m => m.status === 'Completado').length,
+            inDevelopmentModules: Object.values(modules).filter(m => m.status === 'En Desarrollo').length,
+            plannedModules: Object.values(modules).filter(m => m.status === 'Planificación').length
         };
+    }
+
+    // === BÚSQUEDA Y FILTROS ===
+    searchTasks(criteria) {
+        const tasks = Object.values(this.getTasks());
+        
+        return tasks.filter(task => {
+            let matches = true;
+            
+            if (criteria.name) {
+                matches = matches && task.name.toLowerCase().includes(criteria.name.toLowerCase());
+            }
+            
+            if (criteria.status) {
+                matches = matches && task.status === criteria.status;
+            }
+            
+            if (criteria.priority) {
+                matches = matches && task.priority === criteria.priority;
+            }
+            
+            return matches;
+        });
+    }
+
+    searchModules(criteria) {
+        const modules = Object.values(this.getModules());
+        
+        return modules.filter(module => {
+            let matches = true;
+            
+            if (criteria.name) {
+                matches = matches && module.name.toLowerCase().includes(criteria.name.toLowerCase());
+            }
+            
+            if (criteria.category) {
+                matches = matches && module.category === criteria.category;
+            }
+            
+            if (criteria.status) {
+                matches = matches && module.status === criteria.status;
+            }
+            
+            return matches;
+        });
+    }
+
+    // === REPORTES AVANZADOS ===
+    getModulesByCategory() {
+        const modules = Object.values(this.getModules());
+        const grouped = {};
+        
+        modules.forEach(module => {
+            if (!grouped[module.category]) {
+                grouped[module.category] = [];
+            }
+            grouped[module.category].push(module);
+        });
+        
+        return grouped;
     }
 
     // === UTILIDADES ===
@@ -547,7 +802,10 @@ class PortalDatabase {
             projects: this.getProjects(),
             assignments: this.getAssignments(),
             reports: this.getReports(),
-            exportDate: new Date().toISOString()
+            tasks: this.getTasks(),
+            modules: this.getModules(),
+            exportDate: new Date().toISOString(),
+            version: '2.0'
         };
         return JSON.stringify(data, null, 2);
     }
@@ -561,11 +819,207 @@ class PortalDatabase {
             if (data.projects) this.setData('projects', data.projects);
             if (data.assignments) this.setData('assignments', data.assignments);
             if (data.reports) this.setData('reports', data.reports);
+            if (data.tasks) this.setData('tasks', data.tasks);
+            if (data.modules) this.setData('modules', data.modules);
             
             return { success: true, message: 'Datos importados correctamente' };
         } catch (error) {
             return { success: false, message: 'Error al importar datos: ' + error.message };
         }
+    }
+
+    // === VALIDACIONES ADICIONALES ===
+    validateTaskData(taskData) {
+        const errors = [];
+        
+        if (!taskData.name || taskData.name.trim().length === 0) {
+            errors.push('El nombre de la tarea es requerido');
+        }
+        
+        if (taskData.name && taskData.name.length > 100) {
+            errors.push('El nombre de la tarea no puede exceder 100 caracteres');
+        }
+        return {
+            isValid: errors.length === 0,
+            errors: errors
+        };
+    }
+
+    validateModuleData(moduleData) {
+        const errors = [];
+        
+        if (!moduleData.name || moduleData.name.trim().length === 0) {
+            errors.push('El nombre del módulo es requerido');
+        }
+        
+        if (moduleData.name && moduleData.name.length > 100) {
+            errors.push('El nombre del módulo no puede exceder 100 caracteres');
+        }
+        
+        const validCategories = ['Frontend', 'Backend', 'Base de Datos', 'API', 'Integración', 'Otros'];
+        if (moduleData.category && !validCategories.includes(moduleData.category)) {
+            errors.push('Categoría no válida');
+        }
+        
+        return {
+            isValid: errors.length === 0,
+            errors: errors
+        };
+    }
+
+    // === MANTENIMIENTO DE DATOS ===
+    cleanupOldData(daysOld = 365) {
+        const cutoffDate = new Date(Date.now() - (daysOld * 24 * 60 * 60 * 1000));
+        
+        // Limpiar reportes antiguos con estado "Rechazado"
+        const reports = this.getReports();
+        let cleanedReports = 0;
+        
+        Object.keys(reports).forEach(reportId => {
+            const report = reports[reportId];
+            const reportDate = new Date(report.createdAt);
+            
+            if (report.status === 'Rechazado' && reportDate < cutoffDate) {
+                delete reports[reportId];
+                cleanedReports++;
+            }
+        });
+        
+        if (cleanedReports > 0) {
+            this.setData('reports', reports);
+        }
+        
+        // Limpiar tareas completadas muy antiguas
+        const tasks = this.getTasks();
+        let cleanedTasks = 0;
+        
+        Object.keys(tasks).forEach(taskId => {
+            const task = tasks[taskId];
+            const taskDate = new Date(task.createdAt);
+            
+            if (task.status === 'Completada' && taskDate < cutoffDate) {
+                delete tasks[taskId];
+                cleanedTasks++;
+            }
+        });
+        
+        if (cleanedTasks > 0) {
+            this.setData('tasks', tasks);
+        }
+        
+        return {
+            success: true,
+            message: `Limpieza completada: ${cleanedReports} reportes y ${cleanedTasks} tareas eliminadas`
+        };
+    }
+
+    // === BACKUP Y RESTAURACIÓN ===
+    createBackup() {
+        const backupData = {
+            timestamp: new Date().toISOString(),
+            data: {
+                users: this.getUsers(),
+                companies: this.getCompanies(),
+                projects: this.getProjects(),
+                assignments: this.getAssignments(),
+                reports: this.getReports(),
+                tasks: this.getTasks(),
+                modules: this.getModules()
+            },
+            stats: this.getStats(),
+            version: '2.0'
+        };
+        
+        // Guardar backup en localStorage
+        const backupKey = `backup_${Date.now()}`;
+        this.setData(backupKey, backupData);
+        
+        return {
+            success: true,
+            backupKey: backupKey,
+            message: 'Backup creado correctamente'
+        };
+    }
+
+    listBackups() {
+        const allKeys = Object.keys(localStorage);
+        const backupKeys = allKeys.filter(key => key.startsWith(this.prefix + 'backup_'));
+        
+        const backups = backupKeys.map(key => {
+            const backup = this.getData(key.replace(this.prefix, ''));
+            return {
+                key: key,
+                timestamp: backup.timestamp,
+                stats: backup.stats
+            };
+        });
+        
+        return backups.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    }
+
+    restoreBackup(backupKey) {
+        try {
+            const backup = this.getData(backupKey.replace(this.prefix, ''));
+            
+            if (!backup || !backup.data) {
+                return { success: false, message: 'Backup no válido' };
+            }
+            
+            // Restaurar todos los datos
+            Object.keys(backup.data).forEach(dataType => {
+                this.setData(dataType, backup.data[dataType]);
+            });
+            
+            return { success: true, message: 'Backup restaurado correctamente' };
+        } catch (error) {
+            return { success: false, message: 'Error al restaurar backup: ' + error.message };
+        }
+    }
+
+    deleteBackup(backupKey) {
+        return this.deleteData(backupKey.replace(this.prefix, ''));
+    }
+
+    // === MÉTRICAS Y ANALYTICS ===
+    getProductivityMetrics() {
+        const tasks = Object.values(this.getTasks());
+        const modules = Object.values(this.getModules());
+        
+        // Calcular métricas de tareas
+        const totalTasks = tasks.length;
+        const completedTasks = tasks.filter(t => t.status === 'Completada').length;
+        const taskCompletionRate = totalTasks > 0 ? (completedTasks / totalTasks * 100).toFixed(1) : 0;
+        
+        // Calcular métricas de módulos
+        const totalModules = modules.length;
+        const completedModules = modules.filter(m => m.status === 'Completado').length;
+        const moduleCompletionRate = totalModules > 0 ? (completedModules / totalModules * 100).toFixed(1) : 0;
+        
+        // Módulos por categoría
+        const modulesByCategory = {
+            frontend: modules.filter(m => m.category === 'Frontend').length,
+            backend: modules.filter(m => m.category === 'Backend').length,
+            database: modules.filter(m => m.category === 'Base de Datos').length,
+            api: modules.filter(m => m.category === 'API').length,
+            integration: modules.filter(m => m.category === 'Integración').length,
+            others: modules.filter(m => m.category === 'Otros').length
+        };
+        
+        return {
+            tasks: {
+                total: totalTasks,
+                completed: completedTasks,
+                completionRate: taskCompletionRate,
+                byPriority: tasksByPriority
+            },
+            modules: {
+                total: totalModules,
+                completed: completedModules,
+                completionRate: moduleCompletionRate,
+                byCategory: modulesByCategory
+            },
+            generatedAt: new Date().toISOString()
+        };
     }
 }
 

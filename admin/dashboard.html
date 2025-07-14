@@ -51,142 +51,295 @@
                 </div>
             </div>
 
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Gestión de Usuarios -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">👥 Gestión de Usuarios</h2>
-                        <button class="add-btn" onclick="openUserModal()">+ Nuevo Usuario</button>
+            <!-- Layout con Sidebar -->
+            <div class="admin-layout-wrapper">
+                <!-- Sidebar de Navegación -->
+                <div class="admin-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-section-title">📊 Gestión General</h3>
+                        <div class="sidebar-menu">
+                            <div class="sidebar-menu-item active" data-section="usuarios">
+                                <span class="menu-icon">👥</span>
+                                <span class="menu-text">Usuarios</span>
+                                <span class="menu-badge" id="sidebarUsersCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="empresas">
+                                <span class="menu-icon">🏢</span>
+                                <span class="menu-text">Empresas</span>
+                                <span class="menu-badge" id="sidebarCompaniesCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="proyectos">
+                                <span class="menu-icon">📋</span>
+                                <span class="menu-text">Proyectos</span>
+                                <span class="menu-badge" id="sidebarProjectsCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="tareas">
+                                <span class="menu-icon">✅</span>
+                                <span class="menu-text">Tareas</span>
+                                <span class="menu-badge" id="sidebarTasksCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="modulos">
+                                <span class="menu-icon">🧩</span>
+                                <span class="menu-text">Módulos</span>
+                                <span class="menu-badge" id="sidebarModulesCount">0</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="items-list" id="usersList">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">👤</div>
-                            <div class="empty-state-title">No hay usuarios</div>
-                            <div class="empty-state-desc">Cree el primer usuario consultor</div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-section-title">🎯 Asignaciones</h3>
+                        <div class="sidebar-menu">
+                            <div class="sidebar-menu-item" data-section="crear-asignacion">
+                                <span class="menu-icon">➕</span>
+                                <span class="menu-text">Nueva Asignación</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="lista-asignaciones">
+                                <span class="menu-icon">📋</span>
+                                <span class="menu-text">Lista Completa</span>
+                                <span class="menu-badge" id="sidebarAssignmentsCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="asignaciones-recientes">
+                                <span class="menu-icon">🕒</span>
+                                <span class="menu-text">Recientes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-section-title">📄 Reportes</h3>
+                        <div class="sidebar-menu">
+                            <div class="sidebar-menu-item" data-section="todos-reportes">
+                                <span class="menu-icon">📊</span>
+                                <span class="menu-text">Todos los Reportes</span>
+                                <span class="menu-badge" id="sidebarReportsCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="reportes-pendientes">
+                                <span class="menu-icon">⏳</span>
+                                <span class="menu-text">Pendientes</span>
+                                <span class="menu-badge" id="sidebarPendingReportsCount">0</span>
+                            </div>
+                            <div class="sidebar-menu-item" data-section="generar-reporte">
+                                <span class="menu-icon">📋</span>
+                                <span class="menu-text">Generar Reporte</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Gestión de Empresas -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">🏢 Gestión de Clientes</h2>
-                        <button class="add-btn" onclick="openCompanyModal()">+ Nuevo Cliente</button>
-                    </div>
-                    <div class="items-list" id="companiesList">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🏢</div>
-                            <div class="empty-state-title">No hay Clientes</div>
-                            <div class="empty-state-desc">Registre el primer cliente</div>
+                <!-- Contenido Principal -->
+                <div class="admin-main-content">
+                    <!-- Sección de Usuarios -->
+                    <div id="usuarios-section" class="content-section active">
+                        <div class="section-header">
+                            <h2 class="section-title">👥 Gestión de Usuarios</h2>
+                            <button class="add-btn" onclick="openUserModal()">+ Nuevo Usuario</button>
+                        </div>
+                        <div class="items-list" id="usersList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">👤</div>
+                                <div class="empty-state-title">No hay usuarios</div>
+                                <div class="empty-state-desc">Cree el primer usuario consultor</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Gestión de Proyectos -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">📋 Gestión de Proyectos</h2>
-                        <button class="add-btn" onclick="openProjectModal()">+ Nuevo Proyecto</button>
-                    </div>
-                    <div class="items-list" id="projectsList">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📋</div>
-                            <div class="empty-state-title">No hay proyectos</div>
-                            <div class="empty-state-desc">Cree el primer proyecto</div>
+                    <!-- Sección de Empresas -->
+                    <div id="empresas-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">🏢 Gestión de Empresas</h2>
+                            <button class="add-btn" onclick="openCompanyModal()">+ Nueva Empresa</button>
+                        </div>
+                        <div class="items-list" id="companiesList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🏢</div>
+                                <div class="empty-state-title">No hay empresas</div>
+                                <div class="empty-state-desc">Registre la primera empresa cliente</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Gestión de Tareas -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">📋 Gestión de Tareas</h2>
-                        <button class="add-btn" onclick="openTaskModal()">+ Nueva Tarea</button>
-                    </div>
-                    <div class="items-list" id="tasksList">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📋</div>
-                            <div class="empty-state-title">No hay tareas</div>
-                            <div class="empty-state-desc">Cree la primera tarea</div>
+                    <!-- Sección de Proyectos -->
+                    <div id="proyectos-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">📋 Gestión de Proyectos</h2>
+                            <button class="add-btn" onclick="openProjectModal()">+ Nuevo Proyecto</button>
+                        </div>
+                        <div class="items-list" id="projectsList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📋</div>
+                                <div class="empty-state-title">No hay proyectos</div>
+                                <div class="empty-state-desc">Cree el primer proyecto</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Gestión de Módulos -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">� Gestión de Módulos</h2>
-                        <button class="add-btn" onclick="openModuleModal()">+ Nuevo Módulo</button>
-                    </div>
-                    <div class="items-list" id="tasksList">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📋</div>
-                            <div class="empty-state-title">No hay módulos</div>
-                            <div class="empty-state-desc">Cree el primer módulo</div>
+                    <!-- Sección de Tareas -->
+                    <div id="tareas-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">✅ Gestión de Tareas</h2>
+                            <button class="add-btn" onclick="openTaskModal()">+ Nueva Tarea</button>
+                        </div>
+                        <div class="items-list" id="tasksList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✅</div>
+                                <div class="empty-state-title">No hay tareas</div>
+                                <div class="empty-state-desc">Cree la primera tarea</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Asignaciones Recientes -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">🎯 Asignaciones Recientes</h2>
-                    </div>
-                    <div class="items-list" id="recentAssignments">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🎯</div>
-                            <div class="empty-state-title">Sin asignaciones</div>
-                            <div class="empty-state-desc">Las asignaciones recientes aparecerán aquí</div>
+                    <!-- Sección de Módulos -->
+                    <div id="modulos-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">🧩 Gestión de Módulos</h2>
+                            <button class="add-btn" onclick="openModuleModal()">+ Nuevo Módulo</button>
+                        </div>
+                        <div class="items-list" id="modulesList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🧩</div>
+                                <div class="empty-state-title">No hay módulos</div>
+                                <div class="empty-state-desc">Cree el primer módulo</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Sección de Asignaciones -->
-            <div class="assignments-section">
-                <h2 class="card-title">🔗 Gestión de Asignaciones</h2>
-                <p class="mb-4">Asigne usuarios a empresas y proyectos específicos</p>
-                
-                <div class="assignment-form">
-                    <div class="form-group">
-                        <label for="assignUser">Usuario Consultor</label>
-                        <select id="assignUser" required>
-                            <option value="">Seleccionar usuario</option>
-                        </select>
+                    <!-- Sección de Nueva Asignación -->
+                    <div id="crear-asignacion-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">➕ Crear Nueva Asignación</h2>
+                        </div>
+                        <div class="assignment-form-container">
+                            <div class="assignment-form">
+                                <div class="form-group">
+                                    <label for="assignUser">Usuario Consultor</label>
+                                    <select id="assignUser" required>
+                                        <option value="">Seleccionar usuario</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assignCompany">Empresa Cliente</label>
+                                    <select id="assignCompany" required>
+                                        <option value="">Seleccionar empresa</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assignProject">Proyecto</label>
+                                    <select id="assignProject" required>
+                                        <option value="">Seleccionar proyecto</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assignReportType">Tipo de Reporte</label>
+                                    <select id="assignReportType" required>
+                                        <option value="">Seleccionar frecuencia</option>
+                                        <option value="Diario">Diario</option>
+                                        <option value="Semanal">Semanal</option>
+                                        <option value="Mensual">Mensual</option>
+                                        <option value="Trimestral">Trimestral</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" onclick="createAssignment()">Crear Asignación</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="assignCompany">Empresa Cliente</label>
-                        <select id="assignCompany" required>
-                            <option value="">Seleccionar empresa</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="assignProject">Proyecto</label>
-                        <select id="assignProject" required>
-                            <option value="">Seleccionar proyecto</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="assignReportType">Tipo de Reporte</label>
-                        <select id="assignReportType" required>
-                            <option value="">Seleccionar frecuencia</option>
-                            <option value="Diario">Diario</option>
-                            <option value="Semanal">Semanal</option>
-                            <option value="Mensual">Mensual</option>
-                            <option value="Trimestral">Trimestral</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-primary" onclick="createAssignment()">Crear Asignación</button>
-                    </div>
-                </div>
 
-                <div class="assignments-list" id="assignmentsList">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🔗</div>
-                        <div class="empty-state-title">No hay asignaciones</div>
-                        <div class="empty-state-desc">Las asignaciones creadas aparecerán en esta lista</div>
+                    <!-- Sección de Lista de Asignaciones -->
+                    <div id="lista-asignaciones-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">📋 Lista Completa de Asignaciones</h2>
+                        </div>
+                        <div class="assignments-list" id="assignmentsList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔗</div>
+                                <div class="empty-state-title">No hay asignaciones</div>
+                                <div class="empty-state-desc">Las asignaciones creadas aparecerán en esta lista</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Asignaciones Recientes -->
+                    <div id="asignaciones-recientes-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">🕒 Asignaciones Recientes</h2>
+                        </div>
+                        <div class="items-list" id="recentAssignments">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🎯</div>
+                                <div class="empty-state-title">Sin asignaciones</div>
+                                <div class="empty-state-desc">Las asignaciones recientes aparecerán aquí</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Todos los Reportes -->
+                    <div id="todos-reportes-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">📊 Todos los Reportes</h2>
+                        </div>
+                        <div class="items-list" id="allReportsList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📄</div>
+                                <div class="empty-state-title">No hay reportes</div>
+                                <div class="empty-state-desc">Los reportes enviados por consultores aparecerán aquí</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Reportes Pendientes -->
+                    <div id="reportes-pendientes-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">⏳ Reportes Pendientes de Revisión</h2>
+                        </div>
+                        <div class="items-list" id="pendingReportsList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">⏳</div>
+                                <div class="empty-state-title">No hay reportes pendientes</div>
+                                <div class="empty-state-desc">Los reportes que requieren revisión aparecerán aquí</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Generar Reporte -->
+                    <div id="generar-reporte-section" class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">📋 Generar Reporte Administrativo</h2>
+                        </div>
+                        <div class="report-generator">
+                            <div class="report-options">
+                                <h3>Opciones de Reporte</h3>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="includeUsers" checked> 
+                                        Incluir estadísticas de usuarios
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="includeProjects" checked> 
+                                        Incluir información de proyectos
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="includeActivities" checked> 
+                                        Incluir actividad reciente
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" onclick="generateAdminReport()">
+                                        📊 Generar Reporte Completo
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="exportData()">
+                                        💾 Exportar Datos
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="importData()">
+                                        📁 Importar Datos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -278,7 +431,7 @@
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">📋 Crear Nueva Tarea</h2>
+                <h2 class="modal-title">✅ Crear Nueva Tarea</h2>
                 <button class="close" onclick="closeModal('taskModal')">&times;</button>
             </div>
             <form id="taskForm" class="admin-form">
@@ -301,7 +454,7 @@
     <div id="moduleModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">📋 Crear Nuevo Módulo</h2>
+                <h2 class="modal-title">🧩 Crear Nuevo Módulo</h2>
                 <button class="close" onclick="closeModal('moduleModal')">&times;</button>
             </div>
             <form id="moduleForm" class="admin-form">
