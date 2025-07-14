@@ -586,6 +586,11 @@ function openProjectModal() {
     window.ModalUtils.open('projectModal');
 }
 
+function openTaskModal() {
+    document.getElementById('taskName').focus();
+    window.ModalUtils.open('taskModal');
+}
+
 function closeModal(modalId) {
     window.ModalUtils.close(modalId);
 }

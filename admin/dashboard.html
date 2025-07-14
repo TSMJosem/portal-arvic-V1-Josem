@@ -71,14 +71,14 @@
                 <!-- Gestión de Empresas -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h2 class="card-title">🏢 Gestión de Empresas</h2>
-                        <button class="add-btn" onclick="openCompanyModal()">+ Nueva Empresa</button>
+                        <h2 class="card-title">🏢 Gestión de Clientes</h2>
+                        <button class="add-btn" onclick="openCompanyModal()">+ Nuevo Cliente</button>
                     </div>
                     <div class="items-list" id="companiesList">
                         <div class="empty-state">
                             <div class="empty-state-icon">🏢</div>
-                            <div class="empty-state-title">No hay empresas</div>
-                            <div class="empty-state-desc">Registre la primera empresa cliente</div>
+                            <div class="empty-state-title">No hay Clientes</div>
+                            <div class="empty-state-desc">Registre el primer cliente</div>
                         </div>
                     </div>
                 </div>
@@ -94,6 +94,36 @@
                             <div class="empty-state-icon">📋</div>
                             <div class="empty-state-title">No hay proyectos</div>
                             <div class="empty-state-desc">Cree el primer proyecto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Tareas -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 Gestión de Tareas</h2>
+                        <button class="add-btn" onclick="openTaskModal()">+ Nueva Tarea</button>
+                    </div>
+                    <div class="items-list" id="tasksList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <div class="empty-state-title">No hay tareas</div>
+                            <div class="empty-state-desc">Cree la primera tarea</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Módulos -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">� Gestión de Módulos</h2>
+                        <button class="add-btn" onclick="openModuleModal()">+ Nuevo Módulo</button>
+                    </div>
+                    <div class="items-list" id="tasksList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <div class="empty-state-title">No hay módulos</div>
+                            <div class="empty-state-desc">Cree el primer módulo</div>
                         </div>
                     </div>
                 </div>
@@ -223,6 +253,38 @@
                 <div class="form-group">
                     <label for="projectName">Nombre del Proyecto *</label>
                     <input type="text" id="projectName" placeholder="Ej: Sistema de Gestión Empresarial" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Descripción (opcional)</label>
+                    <textarea id="projectDescription" placeholder="Descripción detallada del proyecto" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectStatus">Estado del Proyecto</label>
+                    <select id="projectStatus">
+                        <option value="Planificación">Planificación</option>
+                        <option value="En Progreso" selected>En Progreso</option>
+                        <option value="En Pausa">En Pausa</option>
+                        <option value="Completado">Completado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Crear Proyecto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tarea -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📋 Crear Nuevo Proyecto</h2>
+                <button class="close" onclick="closeModal('taskModal')">&times;</button>
+            </div>
+            <form id="projectForm" class="admin-form">
+                <div class="form-group">
+                    <label for="taskName">Nombre del Proyecto *</label>
+                    <input type="text" id="taskName" placeholder="Ej: Sistema de Gestión Empresarial" required>
                 </div>
                 <div class="form-group">
                     <label for="projectDescription">Descripción (opcional)</label>
