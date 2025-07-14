@@ -278,29 +278,60 @@
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">📋 Crear Nuevo Proyecto</h2>
+                <h2 class="modal-title">📋 Crear Nueva Tarea</h2>
                 <button class="close" onclick="closeModal('taskModal')">&times;</button>
             </div>
-            <form id="projectForm" class="admin-form">
+            <form id="taskForm" class="admin-form">
                 <div class="form-group">
-                    <label for="taskName">Nombre del Proyecto *</label>
-                    <input type="text" id="taskName" placeholder="Ej: Sistema de Gestión Empresarial" required>
+                    <label for="taskName">Nombre de la Tarea *</label>
+                    <input type="text" id="taskName" placeholder="Ej: Realizar soporte técnico" required>
                 </div>
                 <div class="form-group">
-                    <label for="projectDescription">Descripción (opcional)</label>
-                    <textarea id="projectDescription" placeholder="Descripción detallada del proyecto" rows="3"></textarea>
+                    <label for="taskDescription">Descripción (opcional)</label>
+                    <textarea id="taskDescription" placeholder="Descripción detallada de la tarea" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="projectStatus">Estado del Proyecto</label>
-                    <select id="projectStatus">
-                        <option value="Planificación">Planificación</option>
-                        <option value="En Progreso" selected>En Progreso</option>
-                        <option value="En Pausa">En Pausa</option>
-                        <option value="Completado">Completado</option>
-                    </select>
+                    <button type="submit" class="btn btn-primary">Crear Tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Módulo -->
+    <div id="moduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📋 Crear Nuevo Módulo</h2>
+                <button class="close" onclick="closeModal('moduleModal')">&times;</button>
+            </div>
+            <form id="moduleForm" class="admin-form">
+                <div class="form-group">
+                    <label for="moduleName">Nombre del Módulo *</label>
+                    <input type="text" id="moduleName" placeholder="Ej: Módulo MM" required>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Crear Proyecto</button>
+                    <label for="moduleDescription">Descripción (opcional)</label>
+                    <textarea id="moduleDescription" placeholder="Descripción detallada del módulo" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Crear Módulo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+            </div>
+            <form id="taskForm" class="admin-form">
+                <div class="form-group">
+                    <label for="taskName">Nombre de la Tarea *</label>
+                    <input type="text" id="taskName" placeholder="Ej: Realizar soporte técnico" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Descripción (opcional)</label>
+                    <textarea id="taskDescription" placeholder="Descripción detallada de la tarea" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Crear Tarea</button>
                 </div>
             </form>
         </div>

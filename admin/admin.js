@@ -591,6 +591,11 @@ function openTaskModal() {
     window.ModalUtils.open('taskModal');
 }
 
+function openModuleModal() {
+    document.getElementById('moduleName').focus();
+    window.ModalUtils.open('moduleModal');
+}
+
 function closeModal(modalId) {
     window.ModalUtils.close(modalId);
 }
