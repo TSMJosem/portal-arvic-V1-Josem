@@ -99,6 +99,11 @@
                                 <span class="menu-icon">📋</span>
                                 <span class="menu-text">Generar Reporte</span>
                             </div>
+                            <div class="sidebar-menu-item" data-section="historial-reportes">
+                                <span class="menu-icon">📜</span>
+                                <span class="menu-text">Historial Generados</span>
+                                <span class="menu-badge" id="sidebarGeneratedReportsCount">0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -642,6 +647,99 @@
             </form>
         </div>
     </div>
+    <!-- Sección de Historial de Reportes Generados -->
+<div id="historial-reportes-section" class="content-section">
+    <div class="section-header">
+        <h2 class="section-title">📜 Historial de Reportes Generados</h2>
+        <button class="add-btn" onclick="refreshGeneratedReportsList()">🔄 Actualizar</button>
+    </div>
+    
+    <!-- Filtros para Historial -->
+    <div class="reports-filters">
+        <div class="filter-group">
+            <label for="historialTimeFilter">Período:</label>
+            <select id="historialTimeFilter" onchange="updateGeneratedReportsList()">
+                <option value="week">Esta Semana</option>
+                <option value="month">Este Mes</option>
+                <option value="custom">Rango Personalizado</option>
+                <option value="all">Todos los Reportes</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="historialTypeFilter">Tipo:</label>
+            <select id="historialTypeFilter" onchange="updateGeneratedReportsList()">
+                <option value="all">Todos los Tipos</option>
+                <option value="actividades">Reportes de Actividades</option>
+                <option value="pagos">Reportes de Pagos</option>
+            </select>
+        </div>
+        
+        <div class="filter-group" id="historialCustomDateRange" style="display: none;">
+            <label for="historialStartDate">Fecha Inicio:</label>
+            <input type="date" id="historialStartDate" onchange="updateGeneratedReportsList()">
+            
+            <label for="historialEndDate">Fecha Fin:</label>
+            <input type="date" id="historialEndDate" onchange="updateGeneratedReportsList()">
+        </div>
+        
+        <div class="filter-info">
+            <span id="historialFilterInfo">Mostrando: Esta semana</span>
+        </div>
+    </div>
+    
+    <!-- Tabla de Reportes Generados -->
+    <div class="reports-table-container">
+        <table class="admin-table reports-table" id="generatedReportsTable">
+            <thead>
+                <tr>
+                    <th>Nombre del Archivo</th>
+                    <th>Tipo de Reporte</th>
+                    <th>Período</th>
+                    <th>Registros</th>
+                    <th>Horas Totales</th>
+                    <th>Monto Total</th>
+                    <th>Fecha Generación</th>
+                    <th>Descargas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="generatedReportsTableBody">
+                <tr>
+                    <td colspan="9" class="empty-table-message">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <div class="empty-state-title">No hay reportes generados</div>
+                            <div class="empty-state-desc">Los reportes Excel generados aparecerán en este historial</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Estadísticas del Historial -->
+    <div class="historial-stats">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalGeneratedReports">0</div>
+                <div class="stat-label">Total Reportes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalActividadReports">0</div>
+                <div class="stat-label">Rep. Actividades</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPagoReports">0</div>
+                <div class="stat-label">Rep. Pagos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalDownloads">0</div>
+                <div class="stat-label">Total Descargas</div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Scripts -->
     <script src="../js/database.js"></script>

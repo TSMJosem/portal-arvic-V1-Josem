@@ -137,15 +137,17 @@ function updateSidebarCounts() {
     const approvedReports = reports.filter(r => r.status === 'Aprobado');
 
     // Actualizar contadores en el sidebar
+    const generatedReports = Object.values(window.PortalDB.getGeneratedReports());
     const sidebarElements = {
-        'sidebarUsersCount': consultorUsers.length,
-        'sidebarCompaniesCount': companies.length,
-        'sidebarProjectsCount': projects.length,
-        'sidebarTasksCount': tasks.length,
-        'sidebarModulesCount': modules.length,
-        'sidebarAssignmentsCount': assignments.length,
-        'sidebarReportsCount': pendingReports.length,
-        'sidebarApprovedReportsCount': approvedReports.length
+    'sidebarUsersCount': consultorUsers.length,
+    'sidebarCompaniesCount': companies.length,
+    'sidebarProjectsCount': projects.length,
+    'sidebarTasksCount': tasks.length,
+    'sidebarModulesCount': modules.length,
+    'sidebarAssignmentsCount': assignments.length,
+    'sidebarReportsCount': pendingReports.length,
+    'sidebarApprovedReportsCount': approvedReports.length,
+    'sidebarGeneratedReportsCount': generatedReports.length
     };
 
     Object.entries(sidebarElements).forEach(([elementId, count]) => {
@@ -1336,6 +1338,9 @@ window.updateModulesList = updateModulesList;
 window.updateAssignmentsList = updateAssignmentsList;
 window.updateUsersList = updateUsersList;
 window.viewUserAssignments = viewUserAssignments;
+window.updateGeneratedReportsList = updateGeneratedReportsList;
+window.refreshGeneratedReportsList = refreshGeneratedReportsList;
+window.deleteGeneratedReportFromHistory = deleteGeneratedReportFromHistory;
 
 console.log('✅ Funciones del administrador exportadas globalmente');/**
 
@@ -1493,6 +1498,9 @@ function loadSectionData(sectionName) {
         if (actividadesPreview) actividadesPreview.style.display = 'none';
         if (pagosConfiguration) pagosConfiguration.style.display = 'none';
           break;
+        case 'historial-reportes':
+         updateGeneratedReportsList();
+        break;
     }
 }
 
@@ -2517,9 +2525,26 @@ function generateActividadesReport() {
         const fileName = `REPORTE_ACTIVIDADES_HPEREZ_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}.xlsx`;
         
         XLSX.writeFile(wb, fileName);
-        
-        window.NotificationUtils.success(`Reporte de actividades generado: ${fileName}`);
-        
+
+// Guardar en historial
+const totalHours = currentReportData.reduce((sum, row) => sum + row.horasTotales, 0);
+const reportData = {
+    fileName: fileName,
+    reportType: 'actividades',
+    generatedBy: 'Hector Perez',
+    dateRange: getDateRangeText('actividadesTimeFilter', 'actividadesStartDate', 'actividadesEndDate'),
+    recordCount: currentReportData.length,
+    totalHours: totalHours,
+    totalAmount: 0
+};
+
+const saveResult = window.PortalDB.saveGeneratedReport(reportData);
+if (saveResult.success) {
+    updateSidebarCounts();
+}
+
+window.NotificationUtils.success(`Reporte de actividades generado: ${fileName}`);
+
     } catch (error) {
         console.error('Error generando reporte:', error);
         window.NotificationUtils.error('Error al generar el reporte de actividades');
@@ -2863,10 +2888,31 @@ function generatePagosReport() {
         const today = new Date();
         const fileName = `PAGO_CONSULTORES_HPEREZ_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}.xlsx`;
         
-        XLSX.writeFile(wb, fileName);
-        
-        window.NotificationUtils.success(`Reporte de pagos generado: ${fileName}`);
-        
+       XLSX.writeFile(wb, fileName);
+
+// Calcular totales y guardar en historial
+let totalHours = 0;
+Object.values(tariffConfiguration).forEach(config => {
+    totalHours += config.horasAjustadas;
+});
+
+const reportData = {
+    fileName: fileName,
+    reportType: 'pagos',
+    generatedBy: 'Hector Perez',
+    dateRange: getDateRangeText('pagosTimeFilter', 'pagosStartDate', 'pagosEndDate'),
+    recordCount: Object.keys(tariffConfiguration).length,
+    totalHours: totalHours,
+    totalAmount: grandTotal
+};
+
+const saveResult = window.PortalDB.saveGeneratedReport(reportData);
+if (saveResult.success) {
+    updateSidebarCounts();
+}
+
+window.NotificationUtils.success(`Reporte de pagos generado: ${fileName}`);
+
     } catch (error) {
         console.error('Error generando reporte de pagos:', error);
         window.NotificationUtils.error('Error al generar el reporte de pagos');
@@ -2881,5 +2927,235 @@ window.loadPagosConfiguration = loadPagosConfiguration;
 window.updateTariffCalculation = updateTariffCalculation;
 window.resetTariffs = resetTariffs;
 window.generatePagosReport = generatePagosReport;
+
+// === FUNCIONES PARA HISTORIAL DE REPORTES GENERADOS ===
+
+function getDateRangeText(timeFilterId, startDateId, endDateId) {
+    const timeFilter = document.getElementById(timeFilterId);
+    if (!timeFilter) return 'No especificado';
+    
+    const today = new Date();
+    
+    switch(timeFilter.value) {
+        case 'week':
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            return `${startOfWeek.toLocaleDateString('es-ES')} - ${endOfWeek.toLocaleDateString('es-ES')}`;
+            
+        case 'month':
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            return `${monthNames[today.getMonth()]} ${today.getFullYear()}`;
+            
+        case 'custom':
+            const startDate = document.getElementById(startDateId);
+            const endDate = document.getElementById(endDateId);
+            if (startDate && endDate && startDate.value && endDate.value) {
+                const customStart = new Date(startDate.value);
+                const customEnd = new Date(endDate.value);
+                return `${customStart.toLocaleDateString('es-ES')} - ${customEnd.toLocaleDateString('es-ES')}`;
+            }
+            return 'Rango personalizado';
+            
+        default:
+            return 'Todas las fechas';
+    }
+}
+
+function updateGeneratedReportsList() {
+    const tableBody = document.getElementById('generatedReportsTableBody');
+    const timeFilter = document.getElementById('historialTimeFilter');
+    const typeFilter = document.getElementById('historialTypeFilter');
+    const customDateRange = document.getElementById('historialCustomDateRange');
+    const startDate = document.getElementById('historialStartDate');
+    const endDate = document.getElementById('historialEndDate');
+    const filterInfo = document.getElementById('historialFilterInfo');
+    
+    if (!tableBody) return;
+    
+    // Mostrar/ocultar rango personalizado
+    if (timeFilter && customDateRange) {
+        if (timeFilter.value === 'custom') {
+            customDateRange.style.display = 'flex';
+        } else {
+            customDateRange.style.display = 'none';
+        }
+    }
+    
+    const allReports = Object.values(window.PortalDB.getGeneratedReports());
+    let filteredReports = allReports;
+    
+    // Filtrar por fecha
+    if (timeFilter) {
+        const now = new Date();
+        let filterText = '';
+        
+        switch(timeFilter.value) {
+            case 'week':
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
+                
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                endOfWeek.setHours(23, 59, 59, 999);
+                
+                filteredReports = filteredReports.filter(report => {
+                    const reportDate = new Date(report.createdAt);
+                    return reportDate >= startOfWeek && reportDate <= endOfWeek;
+                });
+                
+                filterText = `Esta semana`;
+                break;
+                
+            case 'month':
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                endOfMonth.setHours(23, 59, 59, 999);
+                
+                filteredReports = filteredReports.filter(report => {
+                    const reportDate = new Date(report.createdAt);
+                    return reportDate >= startOfMonth && reportDate <= endOfMonth;
+                });
+                
+                const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                filterText = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+                break;
+                
+            case 'custom':
+                if (startDate && endDate && startDate.value && endDate.value) {
+                    const customStart = new Date(startDate.value);
+                    customStart.setHours(0, 0, 0, 0);
+                    
+                    const customEnd = new Date(endDate.value);
+                    customEnd.setHours(23, 59, 59, 999);
+                    
+                    filteredReports = filteredReports.filter(report => {
+                        const reportDate = new Date(report.createdAt);
+                        return reportDate >= customStart && reportDate <= customEnd;
+                    });
+                    
+                    filterText = `${customStart.toLocaleDateString('es-ES')} - ${customEnd.toLocaleDateString('es-ES')}`;
+                } else {
+                    filterText = 'Rango personalizado (seleccione fechas)';
+                }
+                break;
+                
+            default: // 'all'
+                filterText = 'Todos los reportes';
+                break;
+        }
+        
+        // Actualizar texto informativo
+        if (filterInfo) {
+            filterInfo.textContent = `Mostrando: ${filterText}`;
+        }
+    }
+    
+    // Filtrar por tipo
+    if (typeFilter && typeFilter.value !== 'all') {
+        filteredReports = filteredReports.filter(report => report.reportType === typeFilter.value);
+    }
+    
+    // Ordenar por fecha de creación (más recientes primero)
+    filteredReports.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    // Generar tabla
+    if (filteredReports.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty-table-message">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div class="empty-state-title">No hay reportes generados</div>
+                        <div class="empty-state-desc">No se encontraron reportes en el período y filtros seleccionados</div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    } else {
+        tableBody.innerHTML = '';
+        filteredReports.forEach(report => {
+            const row = document.createElement('tr');
+            
+            // Determinar clase de descarga
+            let downloadClass = 'zero';
+            if (report.downloadCount > 5) downloadClass = 'high';
+            else if (report.downloadCount > 0) downloadClass = '';
+            
+            row.innerHTML = `
+                <td class="file-name-cell">${report.fileName}</td>
+                <td class="report-type-cell">
+                    <span class="report-type-${report.reportType}">
+                        ${report.reportType === 'actividades' ? '📊 Actividades' : '💰 Pagos'}
+                    </span>
+                </td>
+                <td class="period-cell">${report.dateRange}</td>
+                <td class="records-count">${report.recordCount}</td>
+                <td class="hours-total">${report.totalHours ? report.totalHours.toFixed(1) : '0'} hrs</td>
+                <td class="amount-total">${report.totalAmount ? '$' + report.totalAmount.toFixed(2) : '-'}</td>
+                <td>${window.DateUtils.formatDateTime(report.createdAt)}</td>
+                <td>
+                    <span class="download-count ${downloadClass}">${report.downloadCount}</span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-delete-report" onclick="deleteGeneratedReportFromHistory('${report.id}')" title="Eliminar del historial">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+    
+    // Actualizar estadísticas
+    updateGeneratedReportsStats(allReports);
+}
+
+function updateGeneratedReportsStats(reports = null) {
+    if (!reports) {
+        reports = Object.values(window.PortalDB.getGeneratedReports());
+    }
+    
+    const actividadReports = reports.filter(r => r.reportType === 'actividades');
+    const pagoReports = reports.filter(r => r.reportType === 'pagos');
+    const totalDownloads = reports.reduce((sum, r) => sum + (r.downloadCount || 0), 0);
+    
+    // Actualizar elementos del DOM
+    const totalElement = document.getElementById('totalGeneratedReports');
+    const actividadElement = document.getElementById('totalActividadReports');
+    const pagoElement = document.getElementById('totalPagoReports');
+    const downloadsElement = document.getElementById('totalDownloads');
+    
+    if (totalElement) totalElement.textContent = reports.length;
+    if (actividadElement) actividadElement.textContent = actividadReports.length;
+    if (pagoElement) pagoElement.textContent = pagoReports.length;
+    if (downloadsElement) downloadsElement.textContent = totalDownloads;
+}
+
+function refreshGeneratedReportsList() {
+    updateGeneratedReportsList();
+    window.NotificationUtils.info('Lista actualizada');
+}
+
+function deleteGeneratedReportFromHistory(reportId) {
+    if (!confirm('¿Está seguro de eliminar este reporte del historial? Esta acción no eliminará el archivo descargado.')) {
+        return;
+    }
+    
+    const result = window.PortalDB.deleteGeneratedReport(reportId);
+    if (result.success) {
+        window.NotificationUtils.success('Reporte eliminado del historial');
+        updateGeneratedReportsList();
+        updateSidebarCounts();
+    } else {
+        window.NotificationUtils.error('Error: ' + result.message);
+    }
+}
 
 console.log('✅ Funciones de generación de reportes cargadas correctamente');

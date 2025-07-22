@@ -1194,6 +1194,57 @@ canUserCreateReport(userId) {
         return this.deleteData(backupKey.replace(this.prefix, ''));
     }
 
+    // === GESTIÓN DE REPORTES EXCEL GENERADOS ===
+getGeneratedReports() {
+    return this.getData('generated_reports') || {};
+}
+
+saveGeneratedReport(reportData) {
+    const generatedReports = this.getGeneratedReports();
+    const reportId = `excel_${Date.now()}`;
+    
+    const newGeneratedReport = {
+        id: reportId,
+        fileName: reportData.fileName,
+        reportType: reportData.reportType, // 'actividades' o 'pagos'
+        generatedBy: reportData.generatedBy || 'admin',
+        dateRange: reportData.dateRange,
+        recordCount: reportData.recordCount || 0,
+        totalHours: reportData.totalHours || 0,
+        totalAmount: reportData.totalAmount || 0,
+        createdAt: new Date().toISOString(),
+        downloadCount: 0
+    };
+    
+    generatedReports[reportId] = newGeneratedReport;
+    this.setData('generated_reports', generatedReports);
+    
+    return { success: true, report: newGeneratedReport };
+}
+
+incrementDownloadCount(reportId) {
+    const generatedReports = this.getGeneratedReports();
+    if (generatedReports[reportId]) {
+        generatedReports[reportId].downloadCount++;
+        generatedReports[reportId].lastDownload = new Date().toISOString();
+        this.setData('generated_reports', generatedReports);
+        return { success: true };
+    }
+    return { success: false, message: 'Reporte no encontrado' };
+}
+
+deleteGeneratedReport(reportId) {
+    const generatedReports = this.getGeneratedReports();
+    if (!generatedReports[reportId]) {
+        return { success: false, message: 'Reporte no encontrado' };
+    }
+    
+    delete generatedReports[reportId];
+    this.setData('generated_reports', generatedReports);
+    
+    return { success: true, message: 'Reporte eliminado del historial' };
+}
+
     // === FUNCIONES ESPECÍFICAS PARA EL ADMIN ===
     updateProjectsList() {
         const projects = Object.values(this.getProjects());
